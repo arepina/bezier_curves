@@ -35,6 +35,7 @@ namespace bezier_curves {
 		List<GPoint^>^ dots;
 		Bitmap ^bm;
 		Graphics ^im;
+		int moving_index;
 		System::Windows::Forms::PictureBox^  canvas;
 		System::Windows::Forms::MenuStrip^  menuStrip1;
 		System::Windows::Forms::ToolStripMenuItem^  cleanToolStripMenuItem;
@@ -65,6 +66,8 @@ namespace bezier_curves {
 			this->canvas->TabIndex = 0;
 			this->canvas->TabStop = false;
 			this->canvas->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::canvas_MouseDown);
+			this->canvas->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::canvas_MouseMove);
+			this->canvas->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::canvas_MouseUp);
 			// 
 			// menuStrip1
 			// 
@@ -112,7 +115,10 @@ namespace bezier_curves {
 #pragma endregion
 	private: System::Void cleanToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
 			 System::Void cleanCanvas();
+			 System::Void redraw();
 			 System::Void infoToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
 			 System::Void canvas_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e);
+			 System::Void canvas_MouseUp(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e);
+			 System::Void canvas_MouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e);
 	};
 }

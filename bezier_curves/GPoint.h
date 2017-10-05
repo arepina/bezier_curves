@@ -17,6 +17,7 @@ namespace bezier_curves {
 		GPoint(int x, int y, Color c, PointType type);
 		PointType getType();
 		Point^ getPoint();
+		void setPoint(int x, int y);
 		Color getColor();
 	};
 }

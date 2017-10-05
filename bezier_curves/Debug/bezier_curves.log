@@ -1,4 +1,4 @@
 ﻿  MyForm.cpp
-  GPoint.obj : /DEBUG:FASTLINK is not supported when managed code is present; restarting link with /DEBUG:FULL
+  Bezier.obj : /DEBUG:FASTLINK is not supported when managed code is present; restarting link with /DEBUG:FULL
   bezier_curves.vcxproj -> D:\bezier_curves\Debug\bezier_curves.exe
   bezier_curves.vcxproj -> D:\bezier_curves\Debug\bezier_curves.pdb (Partial PDB)

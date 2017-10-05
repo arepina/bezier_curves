@@ -19,6 +19,11 @@ Point^ bezier_curves::GPoint::getPoint()
 	return p;
 }
 
+void bezier_curves::GPoint::setPoint(int x, int y)
+{
+	p = gcnew Point(x, y);
+}
+
 Color bezier_curves::GPoint::getColor()
 {
 	return c;
