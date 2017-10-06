@@ -26,17 +26,16 @@ float bezier_curves::Bezier::bernstein(int i, int t) {
 
 float *bezier_curves::Bezier::deCasteljau(float **points, int degree, float t) {
 	float *pointsQ = new float[(degree + 1) * 3]; // same as pointsQ[numPoints + 1][3]
-	int Qwidth = 3;
 	for (int j = 0; j <= degree; j++) {
-		pointsQ[j*Qwidth + 0] = points[j][0];
-		pointsQ[j*Qwidth + 1] = points[j][1];
-		pointsQ[j*Qwidth + 2] = points[j][2];
+		pointsQ[j*3 + 0] = points[j][0];
+		pointsQ[j*3 + 1] = points[j][1];
+		pointsQ[j*3 + 2] = points[j][2];
 	}
 	for (int k = 1; k <= degree; k++) {
 		for (int j = 0; j <= degree - k; j++) {
-			pointsQ[j*Qwidth + 0] = (1 - t) * pointsQ[j*Qwidth + 0] + t * pointsQ[(j + 1)*Qwidth + 0];
-			pointsQ[j*Qwidth + 1] = (1 - t) * pointsQ[j*Qwidth + 1] + t * pointsQ[(j + 1)*Qwidth + 1];
-			pointsQ[j*Qwidth + 2] = (1 - t) * pointsQ[j*Qwidth + 2] + t * pointsQ[(j + 1)*Qwidth + 2];
+			pointsQ[j*3 + 0] = (1 - t) * pointsQ[j*3 + 0] + t * pointsQ[(j + 1)*3 + 0];
+			pointsQ[j*3 + 1] = (1 - t) * pointsQ[j*3 + 1] + t * pointsQ[(j + 1)*3 + 1];
+			pointsQ[j*3 + 2] = (1 - t) * pointsQ[j*3 + 2] + t * pointsQ[(j + 1)*3 + 2];
 		}
 	}
 	float *result = new float[3];
@@ -45,6 +44,15 @@ float *bezier_curves::Bezier::deCasteljau(float **points, int degree, float t) {
 	result[2] = pointsQ[2];
 	delete[] pointsQ;
 	return result;
+}
+
+float C(int m, int k)
+{
+	int v;
+	float r = 1;
+	v = (m - k)<k ? m - k : k;
+	for (int i = 0; i<v; i++) r *= ((m - i) / (v - i));
+	return r;
 }
 
 float bezier_curves::Bezier::get_x_arbitrary(int t)

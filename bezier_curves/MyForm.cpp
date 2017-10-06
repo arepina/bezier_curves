@@ -143,9 +143,9 @@ System::Void bezier_curves::MyForm::redraw()
 		im->FillRectangle(gcnew SolidBrush(Color::Black), arr[i].X - 3, arr[i].Y - 3, 6, 6);
 	}
 	if (dots->Count % 3 == 1 && dots->Count >= 4) {
-		im->DrawBeziers(gcnew Pen(Color::Black), arr);
-		//Bezier^ b = gcnew Bezier(*dots[dots->Count - 1]->getPoint(), dots->Count, dots);
-		//is_arbitrary ? b->draw_arbitrary_order(im) : b->draw_third_order(im);
+		//im->DrawBeziers(gcnew Pen(Color::Black), arr);
+		Bezier^ b = gcnew Bezier(*dots[dots->Count - 1]->getPoint(), dots->Count, dots);
+		is_arbitrary ? b->draw_arbitrary_order(im) : b->draw_third_order(im);
 	}
 	canvas->Refresh();
 }
