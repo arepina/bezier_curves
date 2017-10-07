@@ -35,19 +35,27 @@ System::Void bezier_curves::MyForm::canvas_MouseDown(System::Object ^ sender, Sy
 	}
 	if (moving_index == -1) {//not moving
 		im->FillRectangle(gcnew SolidBrush(Color::Black), e->X - 3, e->Y - 3, 6, 6);
-		PointType type = dots->Count % 3 == 1 && dots->Count >= 4 ? PointType::Moving : PointType::Usual;
-		GPoint^ p = gcnew GPoint(e->X, e->Y, Color::Black, type);
-		dots->Add(p);
+		if (dots->Count % 3 == 1 && dots->Count >= 4)//Point wiil be a moving one
+		{
+			moving_index = dots->Count;
+			PointF^ point = gcnew PointF(e->X, e->Y);
+			int x = lie_on_line(point);
+			if (x != -1)// change the coordinates only if the dot lie on the line
+			{
+				GPoint^ p = gcnew GPoint(x, e->Y, Color::Black, PointType::Moving);
+				dots->Add(p);
+			}
+			moving_index = -1;
+		}
+		else {//a usual point
+			GPoint^ p = gcnew GPoint(e->X, e->Y, Color::Black, PointType::Usual);
+			dots->Add(p);
+		}
 		if (dots->Count % 3 == 1)
 		{
 			redraw();
-			if (dots->Count >= 4) {
-				PointF^ last = dots[dots->Count - 1]->getPoint();
-				PointF^ before_last = dots[dots->Count - 2]->getPoint();
-				int new_x = 2 * last->X - before_last->X;
-				int new_y = 2 * last->Y - before_last->Y;
-				im->DrawLine(gcnew Pen(Color::Blue), *before_last, Point(new_x, new_y));
-			}
+			moving_index = dots->Count;
+			draw_moving_line();
 		}
 	}
 	canvas->Refresh();
@@ -62,11 +70,21 @@ System::Void bezier_curves::MyForm::canvas_MouseMove(System::Object ^ sender, Sy
 {
 	if (moving_index != -1)
 	{
-		/*if(dots[moving_index]->getType() == PointType::Moving)
-
-		else*/
-			dots[moving_index]->setPoint(e->X, e->Y);
-		redraw();
+		if (dots->Count > moving_index) {
+			if (dots[moving_index]->getType() == PointType::Moving) {
+				draw_moving_line();
+				PointF^ point = dots[moving_index]->getPoint();
+				int x = lie_on_line(point);
+				if (x != -1)// change the coordinates only if the dot lie on the line
+					dots[moving_index]->setPoint(x, e->Y);
+			}
+			else
+				dots[moving_index]->setPoint(e->X, e->Y);
+			redraw();
+			draw_moving_line();
+		}
+		else
+			moving_index = -1;
 	}
 }
 
@@ -94,17 +112,23 @@ System::Void bezier_curves::MyForm::endToolStripMenuItem_Click(System::Object ^ 
 {
 	if (dots->Count >= 4)
 	{
-		PointF^ dot_one = gcnew PointF(dots[dots->Count - 2]->getPoint()->Y, dots[dots->Count - 2]->getPoint()->X);
-		PointF^ dot_two = gcnew PointF(dots[1]->getPoint()->Y, dots[1]->getPoint()->X);
+		redraw();
+		PointF^ first = dots[dots->Count - 1]->getPoint();
+		PointF^ last = dots[0]->getPoint();
+		PointF^ before_first = dots[dots->Count - 2]->getPoint();
+		PointF^ before_last = dots[1]->getPoint();
+		PointF^ second = gcnew PointF(2 * first->X - before_first->X, 2 * first->Y - before_first->Y);
+		PointF^ third = gcnew PointF(2 * last->X - before_last->X, 2 * last->Y - before_last->Y);
 		array<PointF>^ arr = gcnew array<PointF>(4);
-		arr[0] = *dots[dots->Count - 1]->getPoint();
-		arr[1] = *dot_one;
-		arr[2] = *dot_two;
-		arr[3] = *dots[0]->getPoint();
-		im->DrawBeziers(gcnew Pen(Color::Black), arr);
+		arr[0] = *first;
+		arr[1] = *second;
+		arr[2] = *third;
+		arr[3] = *last;
+		im->DrawBeziers(gcnew Pen(Color::Black, 2.0f), arr);
 	}
 	else
 		MessageBox::Show("Слишком мало точек", "Упс...");
+	canvas->Refresh();
 }
 
 System::Void bezier_curves::MyForm::arbitraryToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)
@@ -137,11 +161,34 @@ System::Void bezier_curves::MyForm::redraw()
 		im->FillRectangle(gcnew SolidBrush(Color::Black), arr[i].X - 3.0f, arr[i].Y - 3.0f, 6.0f, 6.0f);
 	}
 	if (dots->Count % 3 == 1 && dots->Count >= 4) {
-		//im->DrawBeziers(gcnew Pen(Color::Black), arr);
 		Bezier^ b = gcnew Bezier(*dots[dots->Count - 1]->getPoint(), dots->Count, dots);
 		is_arbitrary ? b->draw_arbitrary_order(im) : b->draw_third_order(im);
 	}
 	canvas->Refresh();
+}
+
+int bezier_curves::MyForm::lie_on_line(PointF^ point)
+{
+	PointF^ before = dots[moving_index - 1]->getPoint();
+	PointF^ before_before = dots[moving_index - 2]->getPoint();
+	float down = (before_before->Y - before->Y);
+	float up = (point->Y - before_before->Y) * (before_before->X - before->X) + before_before->X*(before_before->Y - before->Y);
+	int intersect_x = up / down;
+	if (abs(intersect_x - point->X) <= 5)
+		return intersect_x;
+	else return -1;
+}
+
+System::Void bezier_curves::MyForm::draw_moving_line()
+{
+	if (dots->Count >= 4) {
+		PointF^ last = dots[moving_index - 1]->getPoint();
+		PointF^ before_last = dots[moving_index - 2]->getPoint();
+		int new_x = 2 * last->X - before_last->X;
+		int new_y = 2 * last->Y - before_last->Y;
+		im->DrawLine(gcnew Pen(Color::Blue), *before_last, Point(new_x, new_y));
+		canvas->Refresh();
+	}
 }
 
 #pragma endregion Drawing
