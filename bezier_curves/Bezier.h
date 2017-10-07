@@ -16,8 +16,8 @@ namespace bezier_curves {
 		float *deCasteljau(float **points, int degree, float t);
 		float get_x_arbitrary(float t);
 		float get_y_arbitrary(float t);
-		float get_x_third(float t);
-		float get_y_third(float t);
+		float get_x_third(float t, int index);
+		float get_y_third(float t, int index);
 		void draw_arbitrary_order(Graphics^ im);
 		void draw_third_order(Graphics^ im);
 	};

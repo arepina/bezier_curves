@@ -12,11 +12,11 @@ Bezier::Bezier(PointF b, int n, System::Collections::Generic::List<GPoint^>^ p)
 
 int bezier_curves::Bezier::factorial(int N)
 {
-	if (N < 0) 
-		return 0; 
-	if (N == 0) 
+	if (N < 0)
+		return 0;
+	if (N == 0)
 		return 1;
-	else 
+	else
 		return N * factorial(N - 1);
 }
 
@@ -30,15 +30,15 @@ float bezier_curves::Bezier::bernstein(int i, int t) {
 float *bezier_curves::Bezier::deCasteljau(float **points, int degree, float t) {
 	float *pointsQ = new float[(degree + 1) * 3]; // same as pointsQ[numPoints + 1][3]
 	for (int j = 0; j <= degree; j++) {
-		pointsQ[j*3 + 0] = points[j][0];
-		pointsQ[j*3 + 1] = points[j][1];
-		pointsQ[j*3 + 2] = points[j][2];
+		pointsQ[j * 3 + 0] = points[j][0];
+		pointsQ[j * 3 + 1] = points[j][1];
+		pointsQ[j * 3 + 2] = points[j][2];
 	}
 	for (int k = 1; k <= degree; k++) {
 		for (int j = 0; j <= degree - k; j++) {
-			pointsQ[j*3 + 0] = (1 - t) * pointsQ[j*3 + 0] + t * pointsQ[(j + 1)*3 + 0];
-			pointsQ[j*3 + 1] = (1 - t) * pointsQ[j*3 + 1] + t * pointsQ[(j + 1)*3 + 1];
-			pointsQ[j*3 + 2] = (1 - t) * pointsQ[j*3 + 2] + t * pointsQ[(j + 1)*3 + 2];
+			pointsQ[j * 3 + 0] = (1 - t) * pointsQ[j * 3 + 0] + t * pointsQ[(j + 1) * 3 + 0];
+			pointsQ[j * 3 + 1] = (1 - t) * pointsQ[j * 3 + 1] + t * pointsQ[(j + 1) * 3 + 1];
+			pointsQ[j * 3 + 2] = (1 - t) * pointsQ[j * 3 + 2] + t * pointsQ[(j + 1) * 3 + 2];
 		}
 	}
 	float *result = new float[3];
@@ -49,14 +49,20 @@ float *bezier_curves::Bezier::deCasteljau(float **points, int degree, float t) {
 	return result;
 }
 
-float bezier_curves::Bezier::get_x_third(float t)
+float bezier_curves::Bezier::get_x_third(float t, int index)
 {
-	return pow((1 - t), 3) * p[0]->getPoint()->X + 3 * t * pow((1 - t), 2) * p[1]->getPoint()->X + 3 * t * t * (1 - t) * p[2]->getPoint()->X + t * t * t * p[3]->getPoint()->X;
+	/*if (index == 3)//first part
+		return pow((1 - t), 3) * p[index - 3]->getPoint()->X + 3 * t * pow((1 - t), 2) * p[index - 2]->getPoint()->X + 3 * t * t * (1 - t) * p[index - 1]->getPoint()->X + t * t * t * p[index]->getPoint()->X;
+	else//all the other*/
+		return pow((1 - t), 3) * p[index - 4]->getPoint()->X + 3 * t * pow((1 - t), 2) * p[index - 3]->getPoint()->X + 3 * t * t * (1 - t) * p[index - 2]->getPoint()->X + t * t * t * p[index - 1]->getPoint()->X;
 }
 
-float bezier_curves::Bezier::get_y_third(float t)
+float bezier_curves::Bezier::get_y_third(float t, int index)
 {
-	return pow((1 - t), 3) * p[0]->getPoint()->Y + 3 * t * pow((1 - t), 2) * p[1]->getPoint()->Y + 3 * t * t * (1 - t) * p[2]->getPoint()->Y + t * t * t * p[3]->getPoint()->Y;
+	/*if (index == 3)//first part
+		return pow((1 - t), 3) * p[index - 3]->getPoint()->Y + 3 * t * pow((1 - t), 2) * p[index - 2]->getPoint()->Y + 3 * t * t * (1 - t) * p[index - 1]->getPoint()->Y + t * t * t * p[index]->getPoint()->Y;
+	else//all the other*/
+		return pow((1 - t), 3) * p[index - 4]->getPoint()->Y + 3 * t * pow((1 - t), 2) * p[index - 3]->getPoint()->Y + 3 * t * t * (1 - t) * p[index - 2]->getPoint()->Y + t * t * t * p[index - 1]->getPoint()->Y;
 }
 
 float bezier_curves::Bezier::get_x_arbitrary(float t)
@@ -95,10 +101,14 @@ System::Void bezier_curves::Bezier::draw_arbitrary_order(Graphics^ im)
 
 System::Void bezier_curves::Bezier::draw_third_order(Graphics^ im)
 {
-	for (float cur_t = 0; cur_t < 1; cur_t += 0.005)
+	for (int i = 4; i <= p->Count; i += 3)
 	{
-		float x = get_x_third(cur_t);
-		float y = get_y_third(cur_t);
-		im->DrawRectangle(gcnew Pen(Color::Black), x, y, 1.0f, 1.0f);
+		b = PointF(p[i - 1]->getPoint()->X, p[i - 1]->getPoint()->Y);
+		for (float cur_t = 0; cur_t < 1; cur_t += 0.005)
+		{
+			float x = get_x_third(cur_t, i);
+			float y = get_y_third(cur_t, i);
+			im->DrawRectangle(gcnew Pen(Color::Black), x, y, 1.0f, 1.0f);
+		}
 	}
 }
