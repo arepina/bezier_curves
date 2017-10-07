@@ -2,9 +2,9 @@
 
 using namespace bezier_curves;
 
-GPoint::GPoint(int x, int y, Color c, PointType type)
+GPoint::GPoint(float x, float y, Color c, PointType type)
 {
-	p = gcnew Point(x, y);
+	p = gcnew PointF(x, y);
 	this->c = c;
 	this->type = type;
 }
@@ -14,14 +14,14 @@ PointType bezier_curves::GPoint::getType()
 	return type;
 }
 
-Point^ bezier_curves::GPoint::getPoint()
+PointF^ bezier_curves::GPoint::getPoint()
 {
 	return p;
 }
 
-void bezier_curves::GPoint::setPoint(int x, int y)
+void bezier_curves::GPoint::setPoint(float x, float y)
 {
-	p = gcnew Point(x, y);
+	p = gcnew PointF(x, y);
 }
 
 Color bezier_curves::GPoint::getColor()

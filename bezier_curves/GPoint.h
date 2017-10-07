@@ -10,14 +10,14 @@ namespace bezier_curves {
 	ref class GPoint
 	{
 	private:
-		Point^ p;
+		PointF^ p;
 		Color c;
 		PointType type;
 	public:
-		GPoint(int x, int y, Color c, PointType type);
+		GPoint(float x, float y, Color c, PointType type);
 		PointType getType();
-		Point^ getPoint();
-		void setPoint(int x, int y);
+		PointF^ getPoint();
+		void setPoint(float x, float y);
 		Color getColor();
 	};
 }

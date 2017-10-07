@@ -2,6 +2,7 @@
 #include <Windows.h>
 using namespace bezier_curves;
 using namespace std;
+#include <cmath>
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
@@ -41,17 +42,10 @@ System::Void bezier_curves::MyForm::canvas_MouseDown(System::Object ^ sender, Sy
 		{
 			redraw();
 			if (dots->Count >= 4) {
-				Point^ last = dots[dots->Count - 1]->getPoint();
-				Point^ before_last = dots[dots->Count - 2]->getPoint();
-				int new_x, new_y;
-				if (last->X < before_last->X)
-					new_x = last->X - abs(last->X - before_last->X);
-				else
-					new_x = before_last->X + abs(last->X - before_last->X);
-				if (last->Y < before_last->Y)
-					new_y = last->Y - abs(last->Y - before_last->Y);
-				else
-					new_y = last->Y + abs(last->Y - before_last->Y);
+				PointF^ last = dots[dots->Count - 1]->getPoint();
+				PointF^ before_last = dots[dots->Count - 2]->getPoint();
+				int new_x = 2 * last->X - before_last->X;
+				int new_y = 2 * last->Y - before_last->Y;
 				im->DrawLine(gcnew Pen(Color::Blue), *before_last, Point(new_x, new_y));
 			}
 		}
@@ -100,9 +94,9 @@ System::Void bezier_curves::MyForm::endToolStripMenuItem_Click(System::Object ^ 
 {
 	if (dots->Count >= 4)
 	{
-		Point^ dot_one = gcnew Point(dots[dots->Count - 2]->getPoint()->Y, dots[dots->Count - 2]->getPoint()->X);
-		Point^ dot_two = gcnew Point(dots[1]->getPoint()->Y, dots[1]->getPoint()->X);
-		array<Point>^ arr = gcnew array<Point>(4);
+		PointF^ dot_one = gcnew PointF(dots[dots->Count - 2]->getPoint()->Y, dots[dots->Count - 2]->getPoint()->X);
+		PointF^ dot_two = gcnew PointF(dots[1]->getPoint()->Y, dots[1]->getPoint()->X);
+		array<PointF>^ arr = gcnew array<PointF>(4);
 		arr[0] = *dots[dots->Count - 1]->getPoint();
 		arr[1] = *dot_one;
 		arr[2] = *dot_two;
@@ -136,11 +130,11 @@ System::Void bezier_curves::MyForm::cleanCanvas()
 System::Void bezier_curves::MyForm::redraw()
 {
 	cleanCanvas();
-	array<Point>^ arr = gcnew array<Point>(dots->Count);
+	array<PointF>^ arr = gcnew array<PointF>(dots->Count);
 	for (int i = 0; i < dots->Count; i++)
 	{
 		arr[i] = *dots[i]->getPoint();
-		im->FillRectangle(gcnew SolidBrush(Color::Black), arr[i].X - 3, arr[i].Y - 3, 6, 6);
+		im->FillRectangle(gcnew SolidBrush(Color::Black), arr[i].X - 3.0f, arr[i].Y - 3.0f, 6.0f, 6.0f);
 	}
 	if (dots->Count % 3 == 1 && dots->Count >= 4) {
 		//im->DrawBeziers(gcnew Pen(Color::Black), arr);

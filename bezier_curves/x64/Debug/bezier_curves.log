@@ -1,17 +1,8 @@
-﻿  Bezier.cpp
-Bezier.cpp(21): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-Bezier.cpp(22): warning C4244: '*=': conversion from 'double' to 'float', possible loss of data
-Bezier.cpp(23): warning C4244: '*=': conversion from 'double' to 'float', possible loss of data
-Bezier.cpp(64): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-Bezier.cpp(74): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-Bezier.cpp(81): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-Bezier.cpp(86): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-Bezier.cpp(91): warning C4305: '+=': truncation from 'double' to 'float'
-Bezier.cpp(93): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-Bezier.cpp(99): warning C4305: '+=': truncation from 'double' to 'float'
-Bezier.cpp(101): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-  MyForm.cpp
-  Generating Code...
+﻿  MyForm.cpp
+MyForm.cpp(39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+MyForm.cpp(47): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+MyForm.cpp(48): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+MyForm.cpp(68): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Bezier.obj : /DEBUG:FASTLINK is not supported when managed code is present; restarting link with /DEBUG:FULL
   bezier_curves.vcxproj -> D:\bezier_curves\x64\Debug\bezier_curves.exe
   bezier_curves.vcxproj -> D:\bezier_curves\x64\Debug\bezier_curves.pdb (Partial PDB)
