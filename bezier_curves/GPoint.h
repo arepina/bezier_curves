@@ -4,7 +4,8 @@ namespace bezier_curves {
 
 	enum class PointType {
 		Usual,
-		Moving
+		Moving,
+		Connecting
 	};
 
 	ref class GPoint

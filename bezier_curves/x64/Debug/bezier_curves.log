@@ -1,14 +1,13 @@
-﻿  Bezier.cpp
-Bezier.cpp(24): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-Bezier.cpp(25): warning C4244: '*=': conversion from 'double' to 'float', possible loss of data
-Bezier.cpp(26): warning C4244: '*=': conversion from 'double' to 'float', possible loss of data
-Bezier.cpp(57): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-Bezier.cpp(65): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-Bezier.cpp(73): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-Bezier.cpp(83): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-Bezier.cpp(90): warning C4305: 'initializing': truncation from 'double' to 'float'
-Bezier.cpp(91): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-Bezier.cpp(107): warning C4305: '+=': truncation from 'double' to 'float'
+﻿  MyForm.cpp
+MyForm.cpp(39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+MyForm.cpp(46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+MyForm.cpp(50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+MyForm.cpp(57): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+MyForm.cpp(92): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+MyForm.cpp(95): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+MyForm.cpp(187): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+MyForm.cpp(198): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+MyForm.cpp(199): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
   Bezier.obj : /DEBUG:FASTLINK is not supported when managed code is present; restarting link with /DEBUG:FULL
   bezier_curves.vcxproj -> D:\bezier_curves\x64\Debug\bezier_curves.exe
   bezier_curves.vcxproj -> D:\bezier_curves\x64\Debug\bezier_curves.pdb (Partial PDB)

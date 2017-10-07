@@ -51,18 +51,12 @@ float *bezier_curves::Bezier::deCasteljau(float **points, int degree, float t) {
 
 float bezier_curves::Bezier::get_x_third(float t, int index)
 {
-	/*if (index == 3)//first part
-		return pow((1 - t), 3) * p[index - 3]->getPoint()->X + 3 * t * pow((1 - t), 2) * p[index - 2]->getPoint()->X + 3 * t * t * (1 - t) * p[index - 1]->getPoint()->X + t * t * t * p[index]->getPoint()->X;
-	else//all the other*/
-		return pow((1 - t), 3) * p[index - 4]->getPoint()->X + 3 * t * pow((1 - t), 2) * p[index - 3]->getPoint()->X + 3 * t * t * (1 - t) * p[index - 2]->getPoint()->X + t * t * t * p[index - 1]->getPoint()->X;
+	return pow((1 - t), 3) * p[index - 4]->getPoint()->X + 3 * t * pow((1 - t), 2) * p[index - 3]->getPoint()->X + 3 * t * t * (1 - t) * p[index - 2]->getPoint()->X + t * t * t * p[index - 1]->getPoint()->X;
 }
 
 float bezier_curves::Bezier::get_y_third(float t, int index)
 {
-	/*if (index == 3)//first part
-		return pow((1 - t), 3) * p[index - 3]->getPoint()->Y + 3 * t * pow((1 - t), 2) * p[index - 2]->getPoint()->Y + 3 * t * t * (1 - t) * p[index - 1]->getPoint()->Y + t * t * t * p[index]->getPoint()->Y;
-	else//all the other*/
-		return pow((1 - t), 3) * p[index - 4]->getPoint()->Y + 3 * t * pow((1 - t), 2) * p[index - 3]->getPoint()->Y + 3 * t * t * (1 - t) * p[index - 2]->getPoint()->Y + t * t * t * p[index - 1]->getPoint()->Y;
+	return pow((1 - t), 3) * p[index - 4]->getPoint()->Y + 3 * t * pow((1 - t), 2) * p[index - 3]->getPoint()->Y + 3 * t * t * (1 - t) * p[index - 2]->getPoint()->Y + t * t * t * p[index - 1]->getPoint()->Y;
 }
 
 float bezier_curves::Bezier::get_x_arbitrary(float t)
@@ -70,7 +64,7 @@ float bezier_curves::Bezier::get_x_arbitrary(float t)
 	float x = 0.0f;
 	for (int i = 0; i < n; i++)
 	{
-		x += p[i]->getPoint()->X * factorial(n) / (factorial(i) * factorial(n - i)) * pow(t, i) * pow((1 - t), (n - i));
+		x += p[i]->getPoint()->X * (factorial(n) / (factorial(i) * factorial(n - i))) * pow(t, i) * pow((1 - t), (n - i));
 	}
 	return x;
 }

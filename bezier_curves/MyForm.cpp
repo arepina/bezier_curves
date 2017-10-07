@@ -28,30 +28,44 @@ bezier_curves::MyForm::MyForm(void)
 #pragma region Click events
 System::Void bezier_curves::MyForm::canvas_MouseDown(System::Object ^ sender, System::Windows::Forms::MouseEventArgs ^ e)
 {
-	for (int i = 0; i < dots->Count; i++)
+	for (int i = 0; i < dots->Count; i++)//try to understand whether the dot is a moving one
 	{
 		if (abs(dots[i]->getPoint()->X - e->X) <= 5 && abs(dots[i]->getPoint()->Y - e->Y) <= 5)
 			moving_index = i;
 	}
 	if (moving_index == -1) {//not moving
-		im->FillRectangle(gcnew SolidBrush(Color::Black), e->X - 3, e->Y - 3, 6, 6);
-		if (dots->Count % 3 == 1 && dots->Count >= 4)//Point wiil be a moving one
+		if (dots->Count % 3 == 0 && dots->Count >= 3)//connecting point
+		{
+			GPoint^ p = gcnew GPoint(e->X, e->Y, Color::Red, PointType::Connecting);
+			dots->Add(p);
+			im->FillRectangle(gcnew SolidBrush(Color::Red), e->X - 3, e->Y - 3, 6, 6);
+		}
+		else if (dots->Count % 3 == 1 && dots->Count >= 4)//moving point
 		{
 			moving_index = dots->Count;
 			PointF^ point = gcnew PointF(e->X, e->Y);
 			int x = lie_on_line(point);
-			if (x != -1)// change the coordinates only if the dot lie on the line
+			if (x != -1)//change the coordinates only if the dot lie on the line
 			{
-				GPoint^ p = gcnew GPoint(x, e->Y, Color::Black, PointType::Moving);
+				GPoint^ p = gcnew GPoint(x, e->Y, Color::Yellow, PointType::Moving);
 				dots->Add(p);
+				im->FillRectangle(gcnew SolidBrush(Color::Yellow), e->X - 3, e->Y - 3, 6, 6);
 			}
 			moving_index = -1;
 		}
-		else {//a usual point
+		else {//usual point
 			GPoint^ p = gcnew GPoint(e->X, e->Y, Color::Black, PointType::Usual);
 			dots->Add(p);
+			im->FillRectangle(gcnew SolidBrush(Color::Black), e->X - 3, e->Y - 3, 6, 6);
 		}
-		if (dots->Count % 3 == 1)
+		if (dots->Count >= 2)//draw the linking lines
+		{
+			for (int i = 1; i < dots->Count; i++)
+			{
+				im->DrawLine(gcnew Pen(Color::Black), *dots[i]->getPoint(), *dots[i - 1]->getPoint());
+			}
+		}
+		if (dots->Count % 3 == 1 && dots->Count > 1)//redraw only having enough points
 		{
 			redraw();
 			moving_index = dots->Count;
@@ -68,23 +82,19 @@ System::Void bezier_curves::MyForm::canvas_MouseUp(System::Object ^ sender, Syst
 
 System::Void bezier_curves::MyForm::canvas_MouseMove(System::Object ^ sender, System::Windows::Forms::MouseEventArgs ^ e)
 {
-	if (moving_index != -1)
+	if (moving_index != -1 && moving_index < dots->Count)
 	{
-		if (dots->Count > moving_index) {
-			if (dots[moving_index]->getType() == PointType::Moving) {
-				draw_moving_line();
-				PointF^ point = dots[moving_index]->getPoint();
-				int x = lie_on_line(point);
-				if (x != -1)// change the coordinates only if the dot lie on the line
-					dots[moving_index]->setPoint(x, e->Y);
-			}
-			else
-				dots[moving_index]->setPoint(e->X, e->Y);
-			redraw();
+		if (dots[moving_index]->getType() == PointType::Moving) {
 			draw_moving_line();
+			PointF^ point = dots[moving_index]->getPoint();
+			int x = lie_on_line(point);
+			if (x != -1)// change the coordinates only if the dot lie on the line
+				dots[moving_index]->setPoint(x, e->Y);
 		}
 		else
-			moving_index = -1;
+			dots[moving_index]->setPoint(e->X, e->Y);
+			//todo MOVE OTHER DOTS
+		redraw();
 	}
 }
 
@@ -158,7 +168,7 @@ System::Void bezier_curves::MyForm::redraw()
 	for (int i = 0; i < dots->Count; i++)
 	{
 		arr[i] = *dots[i]->getPoint();
-		im->FillRectangle(gcnew SolidBrush(Color::Black), arr[i].X - 3.0f, arr[i].Y - 3.0f, 6.0f, 6.0f);
+		im->FillRectangle(gcnew SolidBrush(dots[i]->getColor()), arr[i].X - 3.0f, arr[i].Y - 3.0f, 6.0f, 6.0f);
 	}
 	if (dots->Count % 3 == 1 && dots->Count >= 4) {
 		Bezier^ b = gcnew Bezier(*dots[dots->Count - 1]->getPoint(), dots->Count, dots);
