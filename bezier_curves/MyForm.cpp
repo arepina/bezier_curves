@@ -20,8 +20,9 @@ bezier_curves::MyForm::MyForm(void)
 	im = Graphics::FromImage(bm);
 	dots = gcnew List<GPoint^>();
 	moving_index = -1;
-	is_arbitrary = true;
-	is_third = false;
+	is_arbitrary = false;
+	is_third = true;
+	is_closed = false;
 	cleanCanvas();
 }
 
@@ -104,6 +105,7 @@ System::Void bezier_curves::MyForm::canvas_MouseMove(System::Object ^ sender, Sy
 System::Void bezier_curves::MyForm::cleanToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)
 {
 	dots->Clear();
+	is_closed = false;
 	cleanCanvas();
 }
 
@@ -121,24 +123,10 @@ System::Void bezier_curves::MyForm::infoToolStripMenuItem_Click(System::Object ^
 System::Void bezier_curves::MyForm::endToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)
 {
 	if (dots->Count >= 4)
-	{
-		redraw();
-		PointF^ first = dots[dots->Count - 1]->getPoint();
-		PointF^ last = dots[0]->getPoint();
-		PointF^ before_first = dots[dots->Count - 2]->getPoint();
-		PointF^ before_last = dots[1]->getPoint();
-		PointF^ second = gcnew PointF(2 * first->X - before_first->X, 2 * first->Y - before_first->Y);
-		PointF^ third = gcnew PointF(2 * last->X - before_last->X, 2 * last->Y - before_last->Y);
-		array<PointF>^ arr = gcnew array<PointF>(4);
-		arr[0] = *first;
-		arr[1] = *second;
-		arr[2] = *third;
-		arr[3] = *last;
-		im->DrawBeziers(gcnew Pen(Color::Black, 2.0f), arr);
-	}
+		is_closed = true;
 	else
 		MessageBox::Show("Слишком мало точек", "Упс...");
-	canvas->Refresh();
+	redraw();
 }
 
 System::Void bezier_curves::MyForm::arbitraryToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)
@@ -174,6 +162,8 @@ System::Void bezier_curves::MyForm::redraw()
 		Bezier^ b = gcnew Bezier(*dots[dots->Count - 1]->getPoint(), dots->Count, dots);
 		is_arbitrary ? b->draw_arbitrary_order(im) : b->draw_third_order(im);
 	}
+	if (is_closed)
+		end_up_line();
 	canvas->Refresh();
 }
 
@@ -199,6 +189,22 @@ System::Void bezier_curves::MyForm::draw_moving_line()
 		im->DrawLine(gcnew Pen(Color::Blue), *before_last, Point(new_x, new_y));
 		canvas->Refresh();
 	}
+}
+
+System::Void bezier_curves::MyForm::end_up_line()
+{
+	PointF^ first = dots[dots->Count - 1]->getPoint();
+	PointF^ last = dots[0]->getPoint();
+	PointF^ before_first = dots[dots->Count - 2]->getPoint();
+	PointF^ before_last = dots[1]->getPoint();
+	PointF^ second = gcnew PointF(2 * first->X - before_first->X, 2 * first->Y - before_first->Y);
+	PointF^ third = gcnew PointF(2 * last->X - before_last->X, 2 * last->Y - before_last->Y);
+	array<PointF>^ arr = gcnew array<PointF>(4);
+	arr[0] = *first;
+	arr[1] = *second;
+	arr[2] = *third;
+	arr[3] = *last;
+	im->DrawBeziers(gcnew Pen(Color::Black, 2.0f), arr);
 }
 
 #pragma endregion Drawing
