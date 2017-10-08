@@ -1,24 +1,6 @@
 ﻿  MyForm.cpp
-MyForm.cpp(42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-MyForm.cpp(49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-MyForm.cpp(57): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-MyForm.cpp(64): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-MyForm.cpp(106): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-MyForm.cpp(113): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-MyForm.cpp(114): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-MyForm.cpp(115): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-MyForm.cpp(122): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-MyForm.cpp(123): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-MyForm.cpp(124): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-MyForm.cpp(130): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-MyForm.cpp(244): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-MyForm.cpp(257): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-MyForm.cpp(272): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-MyForm.cpp(273): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-MyForm.cpp(283): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-MyForm.cpp(284): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-MyForm.cpp(291): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-MyForm.cpp(292): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+MyForm.cpp(287): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+MyForm.cpp(300): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
   Bezier.obj : /DEBUG:FASTLINK is not supported when managed code is present; restarting link with /DEBUG:FULL
   bezier_curves.vcxproj -> D:\bezier_curves\x64\Debug\bezier_curves.exe
   bezier_curves.vcxproj -> D:\bezier_curves\x64\Debug\bezier_curves.pdb (Partial PDB)

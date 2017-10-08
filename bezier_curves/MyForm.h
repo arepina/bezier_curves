@@ -190,6 +190,8 @@ namespace bezier_curves {
 			 System::Void redraw();
 			 int lie_on_line(PointF^ point);
 			 System::Void draw_moving_line();
+			 System::Void bezier_part(System::Windows::Forms::MouseEventArgs ^ e);
+			 System::Void bspline_part(System::Windows::Forms::MouseEventArgs ^ e);
 			 System::Void end_up_line();
 			 System::Void infoToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
 			 System::Void canvas_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e);

@@ -3,9 +3,8 @@
 
 using namespace bezier_curves;
 
-BSpline::BSpline(PointF b, int n, System::Collections::Generic::List<GPoint^>^ p)
+BSpline::BSpline(int n, System::Collections::Generic::List<GPoint^>^ p)
 {
-	this->b = b;
 	this->p = p;
 	this->n = n;
 }
@@ -20,11 +19,11 @@ float bezier_curves::BSpline::get_y_third(float t, int index)
 	return ((pow((1 - t), 3) * p[index - 4]->getPoint()->Y + (3 * t*t*t - 6 * t*t + 4) * p[index - 3]->getPoint()->Y + (-3 * t*t*t + 3 * t*t + 3 * t + 1) * p[index - 2]->getPoint()->Y + t*t*t*p[index - 1]->getPoint()->Y)) / 6;
 }
 
+
 void bezier_curves::BSpline::draw_third_order(Graphics ^ im)
 {
 	for (int i = 4; i <= p->Count; i += 1)
 	{
-		b = PointF(p[i - 1]->getPoint()->X, p[i - 1]->getPoint()->Y);
 		for (float cur_t = 0; cur_t <= 1; cur_t += 0.005f)
 		{
 			float x = get_x_third(cur_t, i);

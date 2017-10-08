@@ -7,10 +7,9 @@ namespace bezier_curves {
 	{
 	private:
 		int n;
-		PointF b;
-		System::Collections::Generic::List<GPoint^>^ p;
+		static System::Collections::Generic::List<GPoint^>^ p;
 	public:
-		BSpline(PointF b, int n, System::Collections::Generic::List<GPoint^>^ p);
+		BSpline(int n, System::Collections::Generic::List<GPoint^>^ p);
 		float get_x_third(float t, int index);
 		float get_y_third(float t, int index);
 		void draw_third_order(Graphics^ im);
