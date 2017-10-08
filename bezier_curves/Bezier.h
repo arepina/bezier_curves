@@ -12,8 +12,7 @@ namespace bezier_curves {
 	public:
 		Bezier(PointF b, int n, System::Collections::Generic::List<GPoint^>^ p);
 		int factorial(int n);
-		float bernstein(int i, int t);
-		float *deCasteljau(float **points, int degree, float t);
+		float *deCasteljau(float **points, float t);
 		float get_x_arbitrary(float t);
 		float get_y_arbitrary(float t);
 		float get_x_third(float t, int index);

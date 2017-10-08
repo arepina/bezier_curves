@@ -1,6 +1,7 @@
 #pragma once
 #include "GPoint.h"
 #include "Bezier.h"
+#include "BSpline.h"
 
 namespace bezier_curves {
 
@@ -37,15 +38,18 @@ namespace bezier_curves {
 		Bitmap ^bm;
 		Graphics ^im;
 		int moving_index;
-		bool is_arbitrary, is_third, is_closed;
+		bool is_arbitrary, is_third_bezier, is_closed_bezier, is_third_bspline, is_closed_bspline;
 		System::Windows::Forms::PictureBox^  canvas;
 		System::Windows::Forms::MenuStrip^  menuStrip1;
 		System::Windows::Forms::ToolStripMenuItem^  cleanToolStripMenuItem;
 		System::Windows::Forms::ToolStripMenuItem^  infoToolStripMenuItem;
 		System::Windows::Forms::ToolStripMenuItem^  ôàéëToolStripMenuItem;
-		System::Windows::Forms::ToolStripMenuItem^  endToolStripMenuItem;
+		System::Windows::Forms::ToolStripMenuItem^  endBezierToolStripMenuItem;
 		System::Windows::Forms::ToolStripMenuItem^  arbitraryToolStripMenuItem;
-		System::Windows::Forms::ToolStripMenuItem^  thirdToolStripMenuItem;
+		System::Windows::Forms::ToolStripMenuItem^  thirdBezierToolStripMenuItem;
+		System::Windows::Forms::ToolStripMenuItem^  bñïëàéíToolStripMenuItem;
+		System::Windows::Forms::ToolStripMenuItem^  endBSplineToolStripMenuItem;
+		System::Windows::Forms::ToolStripMenuItem^  thirdBSplineToolStripMenuItem;
 		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
@@ -58,11 +62,14 @@ namespace bezier_curves {
 			this->canvas = (gcnew System::Windows::Forms::PictureBox());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->ôàéëToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->endToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->endBezierToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->arbitraryToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->thirdBezierToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->bñïëàéíToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->endBSplineToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->thirdBSplineToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->cleanToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->infoToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->arbitraryToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->thirdToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->canvas))->BeginInit();
 			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
@@ -81,9 +88,9 @@ namespace bezier_curves {
 			// 
 			// menuStrip1
 			// 
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
+			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {
 				this->ôàéëToolStripMenuItem,
-					this->cleanToolStripMenuItem, this->infoToolStripMenuItem
+					this->bñïëàéíToolStripMenuItem, this->cleanToolStripMenuItem, this->infoToolStripMenuItem
 			});
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
@@ -94,19 +101,57 @@ namespace bezier_curves {
 			// ôàéëToolStripMenuItem
 			// 
 			this->ôàéëToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
-				this->endToolStripMenuItem,
-					this->arbitraryToolStripMenuItem, this->thirdToolStripMenuItem
+				this->endBezierToolStripMenuItem,
+					this->arbitraryToolStripMenuItem, this->thirdBezierToolStripMenuItem
 			});
 			this->ôàéëToolStripMenuItem->Name = L"ôàéëToolStripMenuItem";
-			this->ôàéëToolStripMenuItem->Size = System::Drawing::Size(48, 20);
-			this->ôàéëToolStripMenuItem->Text = L"Ôàéë";
+			this->ôàéëToolStripMenuItem->Size = System::Drawing::Size(49, 20);
+			this->ôàéëToolStripMenuItem->Text = L"Áåçüå";
 			// 
-			// endToolStripMenuItem
+			// endBezierToolStripMenuItem
 			// 
-			this->endToolStripMenuItem->Name = L"endToolStripMenuItem";
-			this->endToolStripMenuItem->Size = System::Drawing::Size(209, 22);
-			this->endToolStripMenuItem->Text = L"Çàìêíóòü";
-			this->endToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::endToolStripMenuItem_Click);
+			this->endBezierToolStripMenuItem->Name = L"endBezierToolStripMenuItem";
+			this->endBezierToolStripMenuItem->Size = System::Drawing::Size(209, 22);
+			this->endBezierToolStripMenuItem->Text = L"Çàìêíóòü";
+			this->endBezierToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::endToolStripMenuItem_Click);
+			// 
+			// arbitraryToolStripMenuItem
+			// 
+			this->arbitraryToolStripMenuItem->Name = L"arbitraryToolStripMenuItem";
+			this->arbitraryToolStripMenuItem->Size = System::Drawing::Size(209, 22);
+			this->arbitraryToolStripMenuItem->Text = L"Ïðîèçâîëüíîãî ïîðÿäêà";
+			this->arbitraryToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::arbitraryToolStripMenuItem_Click);
+			// 
+			// thirdBezierToolStripMenuItem
+			// 
+			this->thirdBezierToolStripMenuItem->Name = L"thirdBezierToolStripMenuItem";
+			this->thirdBezierToolStripMenuItem->Size = System::Drawing::Size(209, 22);
+			this->thirdBezierToolStripMenuItem->Text = L"Òðåòüåãî ïîðÿäêà";
+			this->thirdBezierToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::thirdToolStripMenuItem_Click);
+			// 
+			// bñïëàéíToolStripMenuItem
+			// 
+			this->bñïëàéíToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+				this->endBSplineToolStripMenuItem,
+					this->thirdBSplineToolStripMenuItem
+			});
+			this->bñïëàéíToolStripMenuItem->Name = L"bñïëàéíToolStripMenuItem";
+			this->bñïëàéíToolStripMenuItem->Size = System::Drawing::Size(71, 20);
+			this->bñïëàéíToolStripMenuItem->Text = L"B-ñïëàéí";
+			// 
+			// endBSplineToolStripMenuItem
+			// 
+			this->endBSplineToolStripMenuItem->Name = L"endBSplineToolStripMenuItem";
+			this->endBSplineToolStripMenuItem->Size = System::Drawing::Size(171, 22);
+			this->endBSplineToolStripMenuItem->Text = L"Çàìêíóòü";
+			this->endBSplineToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::endBSplineToolStripMenuItem_Click);
+			// 
+			// thirdBSplineToolStripMenuItem
+			// 
+			this->thirdBSplineToolStripMenuItem->Name = L"thirdBSplineToolStripMenuItem";
+			this->thirdBSplineToolStripMenuItem->Size = System::Drawing::Size(171, 22);
+			this->thirdBSplineToolStripMenuItem->Text = L"Òðåòüåãî ïîðÿäêà";
+			this->thirdBSplineToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::thirdBSplineToolStripMenuItem_Click);
 			// 
 			// cleanToolStripMenuItem
 			// 
@@ -121,20 +166,6 @@ namespace bezier_curves {
 			this->infoToolStripMenuItem->Size = System::Drawing::Size(65, 20);
 			this->infoToolStripMenuItem->Text = L"Ñïðàâêà";
 			this->infoToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::infoToolStripMenuItem_Click);
-			// 
-			// arbitraryToolStripMenuItem
-			// 
-			this->arbitraryToolStripMenuItem->Name = L"arbitraryToolStripMenuItem";
-			this->arbitraryToolStripMenuItem->Size = System::Drawing::Size(209, 22);
-			this->arbitraryToolStripMenuItem->Text = L"Ïðîèçâîëüíîãî ïîðÿäêà";
-			this->arbitraryToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::arbitraryToolStripMenuItem_Click);
-			// 
-			// thirdToolStripMenuItem
-			// 
-			this->thirdToolStripMenuItem->Name = L"thirdToolStripMenuItem";
-			this->thirdToolStripMenuItem->Size = System::Drawing::Size(209, 22);
-			this->thirdToolStripMenuItem->Text = L"Òðåòüåãî ïîðÿäêà";
-			this->thirdToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::thirdToolStripMenuItem_Click);
 			// 
 			// MyForm
 			// 
@@ -167,5 +198,7 @@ namespace bezier_curves {
 			 System::Void endToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
 			 System::Void arbitraryToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
 			 System::Void thirdToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
+			 System::Void thirdBSplineToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
+			 System::Void endBSplineToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
 	};
 }

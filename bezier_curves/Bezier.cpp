@@ -20,22 +20,15 @@ int bezier_curves::Bezier::factorial(int N)
 		return N * factorial(N - 1);
 }
 
-float bezier_curves::Bezier::bernstein(int i, int t) {
-	float r = factorial(n) / (factorial(i) * factorial(n - i));
-	r *= pow(t, i);
-	r *= pow(1 - t, n - i);
-	return r;
-}
-
-float *bezier_curves::Bezier::deCasteljau(float **points, int degree, float t) {
-	float *pointsQ = new float[(degree + 1) * 3]; // same as pointsQ[numPoints + 1][3]
-	for (int j = 0; j <= degree; j++) {
+float *bezier_curves::Bezier::deCasteljau(float **points, float t) {
+	float *pointsQ = new float[(n + 1) * 3];
+	for (int j = 0; j <= n; j++) {
 		pointsQ[j * 3 + 0] = points[j][0];
 		pointsQ[j * 3 + 1] = points[j][1];
 		pointsQ[j * 3 + 2] = points[j][2];
 	}
-	for (int k = 1; k <= degree; k++) {
-		for (int j = 0; j <= degree - k; j++) {
+	for (int k = 1; k <= n; k++) {
+		for (int j = 0; j <= n - k; j++) {
 			pointsQ[j * 3 + 0] = (1 - t) * pointsQ[j * 3 + 0] + t * pointsQ[(j + 1) * 3 + 0];
 			pointsQ[j * 3 + 1] = (1 - t) * pointsQ[j * 3 + 1] + t * pointsQ[(j + 1) * 3 + 1];
 			pointsQ[j * 3 + 2] = (1 - t) * pointsQ[j * 3 + 2] + t * pointsQ[(j + 1) * 3 + 2];
@@ -64,7 +57,7 @@ float bezier_curves::Bezier::get_x_arbitrary(float t)
 	float x = 0.0f;
 	for (int i = 0; i < n; i++)
 	{
-		x += p[i]->getPoint()->X * (factorial(n) / (factorial(i) * factorial(n - i))) * pow(t, i) * pow((1 - t), (n - i));
+		x = x + p[i]->getPoint()->X * (factorial(n) / (factorial(i) * factorial(n - i))) * pow(t, i) * pow((1 - t), (n - i));
 	}
 	return x;
 }
@@ -74,7 +67,7 @@ float bezier_curves::Bezier::get_y_arbitrary(float t)
 	float y = 0.0f;
 	for (int i = 0; i < n; i++)
 	{
-		y += p[i]->getPoint()->Y * factorial(n) / (factorial(i) * factorial(n - i)) * pow(t, i) * pow((1 - t), (n - i));
+		y = y + p[i]->getPoint()->Y * (factorial(n) / (factorial(i) * factorial(n - i))) * pow(t, i) * pow((1 - t), (n - i));
 	}
 	return y;
 }
@@ -98,7 +91,7 @@ System::Void bezier_curves::Bezier::draw_third_order(Graphics^ im)
 	for (int i = 4; i <= p->Count; i += 3)
 	{
 		b = PointF(p[i - 1]->getPoint()->X, p[i - 1]->getPoint()->Y);
-		for (float cur_t = 0; cur_t < 1; cur_t += 0.005)
+		for (float cur_t = 0; cur_t < 1; cur_t += 0.005f)
 		{
 			float x = get_x_third(cur_t, i);
 			float y = get_y_third(cur_t, i);
