@@ -74,16 +74,17 @@ float bezier_curves::Bezier::get_y_arbitrary(float t)
 
 System::Void bezier_curves::Bezier::draw_arbitrary_order(Graphics^ im)
 {
-	float t = 0.05;
-	array<PointF>^ arr = gcnew array<PointF>(1 / t + 1);
-	int i = 0;
+	float t = 0.005f;
+	//array<PointF>^ arr = gcnew array<PointF>(1 / t + 1);
+	//int i = 0;
 	for (float cur_t = 0; cur_t < 1; cur_t += t)
 	{
 		float x = get_x_arbitrary(cur_t);
 		float y = get_y_arbitrary(cur_t);
-		arr[i++] = PointF(x, y);
+		im->FillRectangle(gcnew SolidBrush(Color::Black), x, y, 1.0f, 1.0f);
+		//arr[i++] = PointF(x, y);
 	}
-	im->DrawCurve(gcnew Pen(Color::Black), arr);
+	//im->DrawCurve(gcnew Pen(Color::Black), arr);
 }
 
 System::Void bezier_curves::Bezier::draw_third_order(Graphics^ im)

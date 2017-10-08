@@ -72,11 +72,22 @@ System::Void bezier_curves::MyForm::canvas_MouseDown(System::Object ^ sender, Sy
 				im->DrawLine(gcnew Pen(Color::Black), *dots[i]->getPoint(), *dots[i - 1]->getPoint());
 			}
 		}
-		if (dots->Count % 3 == 1 && dots->Count > 1)//redraw only having enough points
+		if (is_third_bezier || is_arbitrary)//bezier
 		{
-			redraw();
-			moving_index = dots->Count;
-			draw_moving_line();
+			if (dots->Count % 3 == 1 && dots->Count > 1)//redraw only having enough points
+			{
+				redraw();
+				moving_index = dots->Count;
+				draw_moving_line();
+			}
+		}
+		else {//b spline
+			if (dots->Count >= 4) {
+				redraw();
+				moving_index = dots->Count;
+				if(dots->Count % 3 != 2 && dots->Count % 3 != 0)
+					draw_moving_line();
+			}
 		}
 	}
 	canvas->Refresh();
@@ -111,7 +122,7 @@ System::Void bezier_curves::MyForm::canvas_MouseMove(System::Object ^ sender, Sy
 				int new_x = 2 * before->X - moving->X;
 				int new_y = 2 * before->Y - moving->Y;
 				dots[moving_index - 2]->setPoint(new_x, new_y);
-			}			
+			}
 			redraw();
 			draw_moving_line();
 		}
@@ -267,7 +278,7 @@ System::Void bezier_curves::MyForm::draw_moving_line()
 			if (dots->Count <= moving_index + 2)//do not have enough points because of first moving
 			{
 				moving_index -= 1;
-				PointF^ after_next  = dots[moving_index + 1]->getPoint();
+				PointF^ after_next = dots[moving_index + 1]->getPoint();
 				PointF^ next = dots[moving_index + 2]->getPoint();
 				int new_x = 2 * next->X - after_next->X;
 				int new_y = 2 * next->Y - after_next->Y;
@@ -281,7 +292,7 @@ System::Void bezier_curves::MyForm::draw_moving_line()
 				int new_y = 2 * next->Y - after_next->Y;
 				im->DrawLine(gcnew Pen(Color::Blue), *after_next, Point(new_x, new_y));
 			}
-			
+
 		}
 		canvas->Refresh();
 	}
