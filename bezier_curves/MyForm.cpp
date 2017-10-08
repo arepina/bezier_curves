@@ -262,11 +262,13 @@ System::Void bezier_curves::MyForm::redraw()
 	}
 	if (dots->Count >= 4) {
 		BSpline^ spline = gcnew BSpline(dots->Count, dots);
-		Bezier^ b = gcnew Bezier(*dots[dots->Count - 1]->getPoint(), dots->Count, dots);
+		Bezier^ b = gcnew Bezier(dots->Count, dots);
 		if (is_arbitrary)
 			b->draw_arbitrary_order(im);
-		else if (is_third_bezier)
+		else if (is_third_bezier) {
 			b->draw_third_order(im);
+			b->draw_de_casteljau(im);
+		}
 		else if (is_third_bspline)
 			spline->draw_third_order(im);
 	}

@@ -7,17 +7,15 @@ namespace bezier_curves {
 	{
 	private:
 		int n;
-		PointF b;
 		System::Collections::Generic::List<GPoint^>^ p;
 	public:
-		Bezier(PointF b, int n, System::Collections::Generic::List<GPoint^>^ p);
+		Bezier(int n, System::Collections::Generic::List<GPoint^>^ p);
 		int factorial(int n);
-		float *deCasteljau(float **points, float t);
-		float get_x_arbitrary(float t);
-		float get_y_arbitrary(float t);
-		float get_x_third(float t, int index);
-		float get_y_third(float t, int index);
+		PointF^ de_casteljau(System::Collections::Generic::List<GPoint^>^ p, float t);
+		PointF^ get_arbitrary(float t);
+		PointF^ get_third(float t, int index);
 		void draw_arbitrary_order(Graphics^ im);
 		void draw_third_order(Graphics^ im);
+		void draw_de_casteljau(Graphics^ im);
 	};
 }
