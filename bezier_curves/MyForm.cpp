@@ -209,6 +209,8 @@ System::Void bezier_curves::MyForm::endToolStripMenuItem_Click(System::Object ^ 
 
 System::Void bezier_curves::MyForm::arbitraryToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)
 {
+	dots->Clear();
+	cleanCanvas();
 	is_arbitrary = true;
 	is_third_bezier = false;
 	is_third_bspline = false;
@@ -218,6 +220,8 @@ System::Void bezier_curves::MyForm::arbitraryToolStripMenuItem_Click(System::Obj
 
 System::Void bezier_curves::MyForm::thirdToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)
 {
+	dots->Clear();
+	cleanCanvas();
 	is_arbitrary = false;
 	is_third_bezier = true;
 	is_third_bspline = false;
@@ -227,6 +231,8 @@ System::Void bezier_curves::MyForm::thirdToolStripMenuItem_Click(System::Object 
 
 System::Void bezier_curves::MyForm::thirdBSplineToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)
 {
+	dots->Clear();
+	cleanCanvas();
 	is_arbitrary = false;
 	is_third_bezier = false;
 	is_third_bspline = true;
@@ -357,6 +363,7 @@ System::Void bezier_curves::MyForm::end_up_line()
 		arr[1] = *second;
 		arr[2] = *third;
 		arr[3] = *last;
+		im->DrawBeziers(gcnew Pen(Color::Brown, 2.0f), arr);
 		im->DrawBeziers(gcnew Pen(Color::Black, 2.0f), arr);
 	}
 	else if (is_closed_bspline && is_third_bspline) {
