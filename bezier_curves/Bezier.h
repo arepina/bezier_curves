@@ -10,9 +10,8 @@ namespace bezier_curves {
 		System::Collections::Generic::List<GPoint^>^ p;
 	public:
 		Bezier(int n, System::Collections::Generic::List<GPoint^>^ p);
-		int factorial(int n);
+		float factorial(float n);
 		PointF^ de_casteljau(System::Collections::Generic::List<GPoint^>^ p, float t);
-		PointF^ get_arbitrary(float t);
 		PointF^ get_third(float t, int index);
 		void draw_arbitrary_order(Graphics^ im);
 		void draw_third_order(Graphics^ im);

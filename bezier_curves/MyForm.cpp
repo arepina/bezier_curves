@@ -29,7 +29,7 @@ bezier_curves::MyForm::MyForm(void)
 }
 
 #pragma region Click events 
-System::Void bezier_curves::MyForm::bezier_part(System::Windows::Forms::MouseEventArgs ^ e)
+System::Void bezier_curves::MyForm::bezier_part_third(System::Windows::Forms::MouseEventArgs ^ e)
 {
 	if (dots->Count % 3 == 0 && dots->Count >= 3)//connecting point
 	{
@@ -74,6 +74,22 @@ System::Void bezier_curves::MyForm::bezier_part(System::Windows::Forms::MouseEve
 	}
 }
 
+System::Void bezier_curves::MyForm::bezier_part_arbitrary(System::Windows::Forms::MouseEventArgs ^ e)
+{
+	GPoint^ p = gcnew GPoint((float)e->X, (float)e->Y, Color::Black, PointType::Usual);
+	dots->Add(p);
+	im->FillRectangle(gcnew SolidBrush(Color::Black), e->X - 3, e->Y - 3, 6, 6);
+	if (dots->Count >= 4)
+		redraw();
+	if (dots->Count >= 2)//draw the linking lines
+	{
+		for (int i = 1; i < dots->Count; i++)
+		{
+			im->DrawLine(gcnew Pen(Color::Black), *dots[i]->getPoint(), *dots[i - 1]->getPoint());
+		}
+	}
+}
+
 System::Void bezier_curves::MyForm::bspline_part(System::Windows::Forms::MouseEventArgs ^ e)
 {
 	GPoint^ p = gcnew GPoint((float)e->X, (float)e->Y, Color::Black, PointType::Usual);
@@ -98,8 +114,10 @@ System::Void bezier_curves::MyForm::canvas_MouseDown(System::Object ^ sender, Sy
 			moving_index = i;
 	}
 	if (moving_index == -1) {//not moving
-		if (is_third_bezier || is_arbitrary)
-			bezier_part(e);
+		if (is_third_bezier)
+			bezier_part_third(e);
+		else if (is_arbitrary)
+			bezier_part_arbitrary(e);
 		else
 			bspline_part(e);
 	}
@@ -169,10 +187,21 @@ System::Void bezier_curves::MyForm::canvas_MouseMove(System::Object ^ sender, Sy
 			redraw();
 		}
 		else
-		 {
+		{
 			dots[moving_index]->setPoint((float)e->X, (float)e->Y);
 			redraw();
 		}
+		if (is_arbitrary)
+		{
+			if (dots->Count >= 2)//draw the linking lines
+			{
+				for (int i = 1; i < dots->Count; i++)
+				{
+					im->DrawLine(gcnew Pen(Color::Black), *dots[i]->getPoint(), *dots[i - 1]->getPoint());
+				}
+			}
+		}
+		canvas->Refresh();
 	}
 }
 
@@ -205,6 +234,7 @@ System::Void bezier_curves::MyForm::endToolStripMenuItem_Click(System::Object ^ 
 	else
 		MessageBox::Show("Слишком мало точек", "Упс...");
 	redraw();
+	canvas->Refresh();
 }
 
 System::Void bezier_curves::MyForm::arbitraryToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)
@@ -247,6 +277,7 @@ System::Void bezier_curves::MyForm::endBSplineToolStripMenuItem_Click(System::Ob
 	else
 		MessageBox::Show("Слишком мало точек", "Упс...");
 	redraw();
+	canvas->Refresh();
 }
 #pragma endregion Menu
 
@@ -280,7 +311,6 @@ System::Void bezier_curves::MyForm::redraw()
 	}
 	if (is_closed_bezier || is_closed_bspline)
 		end_up_line();
-	canvas->Refresh();
 }
 
 int bezier_curves::MyForm::lie_on_line(PointF^ point)

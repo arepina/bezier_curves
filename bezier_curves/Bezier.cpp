@@ -8,14 +8,14 @@ Bezier::Bezier(int n, System::Collections::Generic::List<GPoint^>^ p)
 	this->n = n;
 }
 
-int bezier_curves::Bezier::factorial(int N)
+float bezier_curves::Bezier::factorial(float k)
 {
-	if (N < 0)
+	if (k < 0)
 		return 0;
-	if (N == 0)
+	if (k == 0)
 		return 1;
 	else
-		return N * factorial(N - 1);
+		return k * factorial(k - 1);
 }
 
 PointF^ bezier_curves::Bezier::de_casteljau(System::Collections::Generic::List<GPoint^>^ p, float t) {
@@ -40,30 +40,21 @@ PointF^ bezier_curves::Bezier::get_third(float t, int index)
 	return gcnew PointF(x, y);
 }
 
-PointF^ bezier_curves::Bezier::get_arbitrary(float t)
-{
-	float x = 0.0f;
-	float y = 0.0f;
-	for (int i = 0; i < n; i++)
-	{
-		x = x + p[i]->getPoint()->X * (factorial(n) / (factorial(i) * factorial(n - i))) * pow(t, i) * pow((1 - t), (n - i));
-		y = y + p[i]->getPoint()->Y * (factorial(n) / (factorial(i) * factorial(n - i))) * pow(t, i) * pow((1 - t), (n - i));
-	}
-	return gcnew PointF(x, y);
-}
-
 System::Void bezier_curves::Bezier::draw_arbitrary_order(Graphics^ im)
 {
-	float t = 0.005f;
-	//array<PointF>^ arr = gcnew array<PointF>(1 / t + 1);
-	//int i = 0;
-	for (float cur_t = 0; cur_t < 1; cur_t += t)
+	for (float t = 0; t <= 1; t += 0.0005f)
 	{
-		PointF^ point = get_arbitrary(cur_t);
-		im->FillRectangle(gcnew SolidBrush(Color::Black), point->X, point->Y, 1.0f, 1.0f);
-		//arr[i++] = PointF(x, y);
+		float x = 0;
+		float y = 0;
+		for (int i = 0; i < n; i++)
+		{
+			float temporary = factorial(n - 1) / (factorial(i) * factorial(n - 1 - i)) * pow(t, i) * pow((1 - t), (n - 1 - i));
+			x += p[i]->getPoint()->X * temporary;
+			y += p[i]->getPoint()->Y * temporary;
+		}
+		im->FillRectangle(gcnew SolidBrush(Color::Black), x, y, 2.0f, 2.0f);
 	}
-	//im->DrawCurve(gcnew Pen(Color::Black), arr);
+	im->FillRectangle(gcnew SolidBrush(Color::Black), p[n - 1]->getPoint()->X, p[n - 1]->getPoint()->Y, 1.0f, 1.0f);
 }
 
 System::Void bezier_curves::Bezier::draw_third_order(Graphics^ im)
