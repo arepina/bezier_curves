@@ -224,7 +224,15 @@ System::Void bezier_curves::MyForm::infoToolStripMenuItem_Click(System::Object ^
 		"ОС Windows 10\n" +
 		"Дата 05.10.2017\n" +
 		"Состав проекта:\n" +
-		"Выполнены пункты:\n", "О программе");
+		"1)MyForm.h + MyForm.cpp - форма и обработка действий пользователя\n" +
+		"2)Bezier.h + Bezier.cpp - кривые безье и алгоритм кастельжо\n" +
+		"3)BSpline.h + BSpline.cpp - б-сплайны и алгоритм де бура\n" +
+		"4)GPoint.h + GPoint.cpp - точка на графиках и ее свойствах\n"
+		"Выполнены пункты:\n" +
+		"1)Рисование кривых безье и алгоритм кастельжо\n" + 
+		"2)Рисование б-сплайнов и алгоритм де бура\n" +
+		"Как все работает:\n" +
+		"В зависимости от выбранного типа кривой, а также способа ее отрисовки в программе имеется возможность выполнить построение. Пользователь, выполняя клики мышкой, может задать основные точки графика. Также имеется возможность замкнуть любую из кривых. При выполнении построения кривой безье одновременно с ней коричневым цветом строится и кривая безье по алгоритму кастельжо. При построении б-сплайнов одновременно строиятся б-сплайны по алгоритму де бура.", "О программе");
 }
 
 System::Void bezier_curves::MyForm::endToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)
@@ -382,19 +390,20 @@ System::Void bezier_curves::MyForm::draw_moving_line()
 System::Void bezier_curves::MyForm::end_up_line()
 {
 	if (is_closed_bezier && (is_arbitrary || is_third_bezier)) {
-		PointF^ first = dots[dots->Count - 1]->getPoint();
-		PointF^ last = dots[0]->getPoint();
+		GPoint^ first = gcnew GPoint(dots[dots->Count - 1]->getPoint()->X, dots[dots->Count - 1]->getPoint()->Y, Color::Black, PointType::Usual);
+		GPoint^ last = gcnew GPoint(dots[0]->getPoint()->X, dots[0]->getPoint()->Y, Color::Black, PointType::Usual);
 		PointF^ before_first = dots[dots->Count - 2]->getPoint();
 		PointF^ before_last = dots[1]->getPoint();
-		PointF^ second = gcnew PointF(2 * first->X - before_first->X, 2 * first->Y - before_first->Y);
-		PointF^ third = gcnew PointF(2 * last->X - before_last->X, 2 * last->Y - before_last->Y);
-		array<PointF>^ arr = gcnew array<PointF>(4);
-		arr[0] = *first;
-		arr[1] = *second;
-		arr[2] = *third;
-		arr[3] = *last;
-		im->DrawBeziers(gcnew Pen(Color::Brown, 2.0f), arr);
-		im->DrawBeziers(gcnew Pen(Color::Black, 2.0f), arr);
+		GPoint^ second = gcnew GPoint(2 * first->getPoint()->X - before_first->X, 2 * first->getPoint()->Y - before_first->Y, Color::Black, PointType::Usual);
+		GPoint^ third = gcnew GPoint(2 * last->getPoint()->X - before_last->X, 2 * last->getPoint()->Y - before_last->Y, Color::Black, PointType::Usual);
+		System::Collections::Generic::List<GPoint^>^ p = gcnew System::Collections::Generic::List<GPoint^>;
+		p->Add(first);
+		p->Add(second);
+		p->Add(third);
+		p->Add(last);
+		Bezier^ b = gcnew Bezier(p->Count, p);
+		b->draw_third_order(im);
+		b->draw_de_casteljau(im);
 	}
 	else if (is_closed_bspline && is_third_bspline) {
 		//first spline

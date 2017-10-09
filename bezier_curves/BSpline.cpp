@@ -40,6 +40,28 @@ void bezier_curves::BSpline::draw_third_order(Graphics ^ im)
 	}
 }
 
+/*
+float CoxDeBoor(float u, int i, int k, const float* Knots) {
+	if (k == 1)
+	{
+		if (Knots[i] <= u && u <= Knots[i + 1]) {
+			return 1.0f;
+		}
+		return 0.0f;
+	}
+	float Den1 = Knots[i + k - 1] - Knots[i];
+	float Den2 = Knots[i + k] - Knots[i + 1];
+	float Eq1 = 0, Eq2 = 0;
+	if (Den1>0) {
+		Eq1 = ((u - Knots[i]) / Den1) * CoxDeBoor(u, i, k - 1, Knots);
+	}
+	if (Den2>0) {
+		Eq2 = (Knots[i + k] - u) / Den2 * CoxDeBoor(u, i + 1, k - 1, Knots);
+	}
+	return Eq1 + Eq2;
+}
+*/
+
 void bezier_curves::BSpline::draw_de_boor(Graphics ^ im)
 {
 	for (int i = 4; i <= p->Count; i += 1)

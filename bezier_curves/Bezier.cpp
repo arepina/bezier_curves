@@ -73,7 +73,7 @@ System::Void bezier_curves::Bezier::draw_de_casteljau(Graphics ^ im)
 {
 	for (int i = 4; i <= p->Count; i += 3)
 	{
-		for (float cur_t = 0; cur_t < 1; cur_t += 0.005f)
+		for (float cur_t = 0; cur_t < 1; cur_t += 0.0005f)
 		{
 			PointF^ point = de_casteljau(p, cur_t);
 			im->DrawRectangle(gcnew Pen(Color::Brown), point->X, point->Y, 1.0f, 1.0f);
