@@ -4,6 +4,7 @@ using namespace bezier_curves;
 using namespace std;
 #include <cmath>
 
+[STAThread]
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 	Application::EnableVisualStyles();
@@ -121,7 +122,7 @@ System::Void bezier_curves::MyForm::canvas_MouseDown(System::Object ^ sender, Sy
 		else
 			bspline_part(e);
 	}
-	canvas->Refresh();
+	//canvas->Refresh();
 }
 
 System::Void bezier_curves::MyForm::canvas_MouseUp(System::Object ^ sender, System::Windows::Forms::MouseEventArgs ^ e)
@@ -201,8 +202,8 @@ System::Void bezier_curves::MyForm::canvas_MouseMove(System::Object ^ sender, Sy
 				}
 			}
 		}
-		canvas->Refresh();
 	}
+	canvas->Refresh();
 }
 
 #pragma endregion Click events
@@ -226,23 +227,13 @@ System::Void bezier_curves::MyForm::infoToolStripMenuItem_Click(System::Object ^
 		"Состав проекта:\n" +
 		"1)MyForm.h + MyForm.cpp - форма и обработка действий пользователя\n" +
 		"2)Bezier.h + Bezier.cpp - кривые безье и алгоритм кастельжо\n" +
-		"3)BSpline.h + BSpline.cpp - б-сплайны и алгоритм де бура\n" +
+		"3)BSpline.h + BSpline.cpp - б-сплайны\n" +
 		"4)GPoint.h + GPoint.cpp - точка на графиках и ее свойствах\n"
 		"Выполнены пункты:\n" +
-		"1)Рисование кривых безье и алгоритм кастельжо\n" + 
+		"1)Рисование кривых безье и алгоритм кастельжо\n" +
 		"2)Рисование б-сплайнов и алгоритм де бура\n" +
 		"Как все работает:\n" +
-		"В зависимости от выбранного типа кривой, а также способа ее отрисовки в программе имеется возможность выполнить построение. Пользователь, выполняя клики мышкой, может задать основные точки графика. Также имеется возможность замкнуть любую из кривых. При выполнении построения кривой безье одновременно с ней коричневым цветом строится и кривая безье по алгоритму кастельжо. При построении б-сплайнов одновременно строиятся б-сплайны по алгоритму де бура.", "О программе");
-}
-
-System::Void bezier_curves::MyForm::endToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)
-{
-	if (dots->Count >= 4)
-		is_closed_bezier = true;
-	else
-		MessageBox::Show("Слишком мало точек", "Упс...");
-	redraw();
-	canvas->Refresh();
+		"В зависимости от выбранного типа кривой, а также способа ее отрисовки в программе имеется возможность выполнить построение. Пользователь, выполняя клики мышкой, может задать основные точки графика. Также имеется возможность замкнуть любую из кривых. При выполнении построения кривой безье одновременно с ней коричневым цветом строится и кривая безье по алгоритму кастельжо. Все действия можно выполнять как мышкой так и загружая/сохраняя из файла. В файле хранится только тип кривой, а также координаты всех точек.", "О программе");
 }
 
 System::Void bezier_curves::MyForm::arbitraryToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)
@@ -280,12 +271,128 @@ System::Void bezier_curves::MyForm::thirdBSplineToolStripMenuItem_Click(System::
 
 System::Void bezier_curves::MyForm::endBSplineToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)
 {
+	if (!is_third_bspline && !is_closed_bspline)
+	{
+		MessageBox::Show("Невозможно применить операцию для данного графика", "Упс...");
+		return;
+	}
 	if (dots->Count >= 4)
 		is_closed_bspline = true;
 	else
 		MessageBox::Show("Слишком мало точек", "Упс...");
 	redraw();
 	canvas->Refresh();
+}
+
+System::Void bezier_curves::MyForm::endToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)
+{
+	if (!is_third_bezier && !is_arbitrary && !is_closed_bezier)
+	{
+		MessageBox::Show("Невозможно применить операцию для данного графика", "Упс...");
+		return;
+	}
+	if (dots->Count >= 4)
+		is_closed_bezier = true;
+	else
+		MessageBox::Show("Слишком мало точек", "Упс...");
+	redraw();
+	canvas->Refresh();
+}
+
+void split(const string& s, char c,
+	vector<string>& v) {
+	string::size_type i = 0;
+	string::size_type j = s.find(c);
+	while (j != string::npos) {
+		v.push_back(s.substr(i, j - i));
+		i = ++j;
+		j = s.find(c, j);
+		if (j == string::npos)
+			v.push_back(s.substr(i, s.length()));
+	}
+}
+
+System::Void bezier_curves::MyForm::loadToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)
+{
+	dots->Clear();
+	is_closed_bezier = false;
+	is_closed_bspline = false;
+	is_arbitrary = false;
+	is_third_bezier = false;
+	is_third_bspline = false;
+	is_closed_bezier = false;
+	is_closed_bspline = false;
+	cleanCanvas();
+	OpenFileDialog ^fd = gcnew OpenFileDialog;
+	fd->Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+	if (fd->ShowDialog() == System::Windows::Forms::DialogResult::OK)
+	{
+		String^ filename = fd->FileName;
+		string line;
+		string converted_filename = msclr::interop::marshal_as<string>(filename);
+		ifstream myfile(converted_filename);
+		if (myfile.is_open())
+		{
+			getline(myfile, line);
+			auto index = line.find_first_of(" ");
+			string figure_name = line.substr(0, index);
+			vector<string> v;
+			split(line, ' ', v);
+			if (v.at(0) == "bezier")
+			{
+				if (v.at(1) == "third")
+					is_third_bezier = true;
+				if (v.at(1) == "arbitrary")
+					is_arbitrary = true;
+				for (int i = 2; i < v.size() - 1; i += 2)
+				{
+					Object^ sender;
+					MouseEventArgs^ args = gcnew MouseEventArgs(::MouseButtons::Left, 1, atoi(v.at(i).c_str()), atoi(v.at(i + 1).c_str()), 0);
+					canvas_MouseDown(sender, args);
+				}
+			}
+			if (v.at(0) == "bspline")
+			{
+				is_third_bspline = true;
+				for (int i = 1; i < v.size() - 1; i += 2)
+				{
+					Object^ sender;
+					MouseEventArgs^ args = gcnew MouseEventArgs(::MouseButtons::Left, 1, atoi(v.at(i).c_str()), atoi(v.at(i + 1).c_str()), 0);
+					canvas_MouseDown(sender, args);
+				}
+			}
+		}
+		myfile.close();
+	}
+	canvas->Refresh();
+}
+
+System::Void bezier_curves::MyForm::saveToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)
+{
+	SaveFileDialog ^fd = gcnew SaveFileDialog;
+	fd->Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+	if (fd->ShowDialog() == System::Windows::Forms::DialogResult::OK)
+	{
+		String^ filename = fd->FileName;
+		string converted_filename = msclr::interop::marshal_as<string>(filename);
+		ofstream myfile(converted_filename);
+		String^ s;
+		if (is_third_bezier)
+			s = "bezier third ";
+		if (is_arbitrary)
+			s = "bezier arbitrary ";
+		if (is_third_bspline)
+			s = "bspline ";
+		for (int i = 0; i < dots->Count; i++)
+		{
+			GPoint^ f = dots[i];
+			s += f->getPoint()->X + " " + f->getPoint()->Y + " ";
+		}
+		s = s->Substring(0, s->Length - 1);
+		std::string unmanaged = msclr::interop::marshal_as<std::string>(s);
+		myfile << unmanaged;
+		myfile.close();
+	}
 }
 #pragma endregion Menu
 
@@ -299,11 +406,9 @@ System::Void bezier_curves::MyForm::cleanCanvas()
 System::Void bezier_curves::MyForm::redraw()
 {
 	cleanCanvas();
-	array<PointF>^ arr = gcnew array<PointF>(dots->Count);
 	for (int i = 0; i < dots->Count; i++)
 	{
-		arr[i] = *dots[i]->getPoint();
-		im->FillRectangle(gcnew SolidBrush(dots[i]->getColor()), arr[i].X - 3.0f, arr[i].Y - 3.0f, 6.0f, 6.0f);
+		im->FillRectangle(gcnew SolidBrush(dots[i]->getColor()), dots[i]->getPoint()->X - 3.0f, dots[i]->getPoint()->Y - 3.0f, 6.0f, 6.0f);
 	}
 	if (dots->Count >= 4) {
 		BSpline^ spline = gcnew BSpline(dots->Count, dots);

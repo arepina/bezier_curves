@@ -1,4 +1,8 @@
 #pragma once
+#include <fstream>
+#include <string>
+#include <iostream>
+#include <msclr/marshal_cppstd.h>
 #include "GPoint.h"
 #include "Bezier.h"
 #include "BSpline.h"
@@ -50,7 +54,12 @@ namespace bezier_curves {
 		System::Windows::Forms::ToolStripMenuItem^  bÒÔÎ‡ÈÌToolStripMenuItem;
 		System::Windows::Forms::ToolStripMenuItem^  endBSplineToolStripMenuItem;
 		System::Windows::Forms::ToolStripMenuItem^  thirdBSplineToolStripMenuItem;
-		System::ComponentModel::Container ^components;
+	private: System::Windows::Forms::ToolStripMenuItem^  Ù‡ÈÎToolStripMenuItem1;
+	private: System::Windows::Forms::ToolStripMenuItem^  loadToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  saveToolStripMenuItem;
+
+
+			 System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -70,6 +79,9 @@ namespace bezier_curves {
 			this->thirdBSplineToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->cleanToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->infoToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->Ù‡ÈÎToolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->loadToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->saveToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->canvas))->BeginInit();
 			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
@@ -77,7 +89,7 @@ namespace bezier_curves {
 			// canvas
 			// 
 			this->canvas->BackColor = System::Drawing::Color::White;
-			this->canvas->Location = System::Drawing::Point(-178, 28);
+			this->canvas->Location = System::Drawing::Point(-184, 27);
 			this->canvas->Name = L"canvas";
 			this->canvas->Size = System::Drawing::Size(1683, 787);
 			this->canvas->TabIndex = 0;
@@ -88,9 +100,9 @@ namespace bezier_curves {
 			// 
 			// menuStrip1
 			// 
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {
-				this->Ù‡ÈÎToolStripMenuItem,
-					this->bÒÔÎ‡ÈÌToolStripMenuItem, this->cleanToolStripMenuItem, this->infoToolStripMenuItem
+			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(5) {
+				this->Ù‡ÈÎToolStripMenuItem1,
+					this->Ù‡ÈÎToolStripMenuItem, this->bÒÔÎ‡ÈÌToolStripMenuItem, this->cleanToolStripMenuItem, this->infoToolStripMenuItem
 			});
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
@@ -167,6 +179,30 @@ namespace bezier_curves {
 			this->infoToolStripMenuItem->Text = L"—Ô‡‚Í‡";
 			this->infoToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::infoToolStripMenuItem_Click);
 			// 
+			// Ù‡ÈÎToolStripMenuItem1
+			// 
+			this->Ù‡ÈÎToolStripMenuItem1->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+				this->loadToolStripMenuItem,
+					this->saveToolStripMenuItem
+			});
+			this->Ù‡ÈÎToolStripMenuItem1->Name = L"Ù‡ÈÎToolStripMenuItem1";
+			this->Ù‡ÈÎToolStripMenuItem1->Size = System::Drawing::Size(48, 20);
+			this->Ù‡ÈÎToolStripMenuItem1->Text = L"‘‡ÈÎ";
+			// 
+			// loadToolStripMenuItem
+			// 
+			this->loadToolStripMenuItem->Name = L"loadToolStripMenuItem";
+			this->loadToolStripMenuItem->Size = System::Drawing::Size(181, 22);
+			this->loadToolStripMenuItem->Text = L"«‡„ÛÁËÚ¸ ËÁ Ù‡ÈÎ‡";
+			this->loadToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::loadToolStripMenuItem_Click);
+			// 
+			// saveToolStripMenuItem
+			// 
+			this->saveToolStripMenuItem->Name = L"saveToolStripMenuItem";
+			this->saveToolStripMenuItem->Size = System::Drawing::Size(181, 22);
+			this->saveToolStripMenuItem->Text = L"—Óı‡ÌËÚ¸ ‚ Ù‡ÈÎ";
+			this->saveToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::saveToolStripMenuItem_Click);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -203,5 +239,7 @@ namespace bezier_curves {
 			 System::Void thirdToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
 			 System::Void thirdBSplineToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
 			 System::Void endBSplineToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
-	};
+			 System::Void loadToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
+			 System::Void saveToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
+};
 }
